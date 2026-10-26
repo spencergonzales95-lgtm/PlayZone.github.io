@@ -1,15 +1,5 @@
 const GAMES = [
- {id:"neon-dodge",title:"Neon Dodge",category:"Arcade",icon:"⚡",theme:"neon",type:"builtin",tag:"QUICK PLAY",description:"Dodge the falling neon blocks and survive for as long as you can. Your score climbs every second.",controls:"Desktop: A/D or ←/→ to move. Mobile: use the on-screen arrows."},
- {id:"tap-rush",title:"Tap Rush",category:"Casual",icon:"👆",theme:"pink",type:"builtin",tag:"REACTION",description:"Tap the target as many times as you can before the timer runs out. Try to beat your personal best.",controls:"Click or tap the target as fast as you can."},
- {id:"pixel-runner",title:"Pixel Runner",category:"Arcade",icon:"🏃",theme:"orange",type:"builtin",tag:"ENDLESS",description:"Jump over obstacles, keep your momentum, and see how far you can run.",controls:"Desktop: Space, W, or ↑ to jump. Mobile: tap JUMP."},
- {id:"memory-match",title:"Memory Match",category:"Puzzle",icon:"🧠",theme:"blue",type:"builtin",tag:"BRAIN GAME",description:"Flip cards and find matching pairs. Clear the board in as few moves as possible.",controls:"Click or tap cards to flip them."},
- {id:"orbit-breaker",title:"Orbit Breaker",category:"Action",icon:"🪐",theme:"purple",type:"builtin",tag:"ARCADE",description:"Move around the arena and avoid incoming orbs. How long can you last?",controls:"Desktop: use A/D or ←/→. Mobile: use the on-screen arrows."},
- {id:"drift-zone",title:"Drift Zone",category:"Racing",icon:"🏎️",theme:"green",type:"external",tag:"RACING",description:"Add a racing game you have permission to embed by editing the games list in app.js.",controls:"Controls depend on the selected game.",url:""},
- {id:"battle-arena",title:"Battle Arena",category:"Action",icon:"⚔️",theme:"red",type:"external",tag:"ACTION",description:"Add an action game you have permission to embed by editing the games list in app.js.",controls:"Controls depend on the selected game.",url:""},
- {id:"block-world",title:"Block World",category:"Adventure",icon:"🧱",theme:"cyan",type:"external",tag:"ADVENTURE",description:"Add a browser adventure game you have permission to embed by editing the games list in app.js.",controls:"Controls depend on the selected game.",url:""},
- {id:"goal-rush",title:"Goal Rush",category:"Sports",icon:"⚽",theme:"lime",type:"builtin",tag:"SPORTS",description:"Keep the ball in play and rack up points in this quick reflex challenge.",controls:"Click or tap the ball to score. Miss three times and the round ends."},
- {id:"color-flip",title:"Color Flip",category:"Puzzle",icon:"🎨",theme:"pink",type:"builtin",tag:"PUZZLE",description:"Remember the pattern and repeat it in the right order as the sequence gets longer.",controls:"Click or tap the colored tiles in the sequence shown."}
-];
+ 
 const CATEGORIES=["All games","Arcade","Action","Racing","Puzzle","Casual","Adventure","Sports"];
 const $=s=>document.querySelector(s);
 const grid=$("#game-grid"),search=$("#search"),cats=$("#categories");
