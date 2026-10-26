@@ -11,7 +11,6 @@ const GAMES = [
   controls: "Keyboard and mouse.",
   url: "https://www.crazygames.com/game/buildnow-gg"
 },
-
 const CATEGORIES=["All games","Arcade","Action","Racing","Puzzle","Casual","Adventure","Sports"];
 const $=s=>document.querySelector(s);
 const grid=$("#game-grid"),search=$("#search"),cats=$("#categories");
