@@ -1,5 +1,17 @@
 const GAMES = [
  
+{
+  id: "buildnow",
+  title: "BuildNow.GG",
+  category: "Shooter",
+  icon: "🔫",
+  theme: "purple",
+  type: "external",
+  description: "Build, edit, and battle other players in BuildNow.GG.",
+  controls: "Keyboard and mouse.",
+  url: "https://www.crazygames.com/game/buildnow-gg"
+},
+
 const CATEGORIES=["All games","Arcade","Action","Racing","Puzzle","Casual","Adventure","Sports"];
 const $=s=>document.querySelector(s);
 const grid=$("#game-grid"),search=$("#search"),cats=$("#categories");
