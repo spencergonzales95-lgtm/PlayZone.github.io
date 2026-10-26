@@ -1,4 +1,3 @@
-
 const GAMES = [
   {
     id: "buildnow",
@@ -12,7 +11,6 @@ const GAMES = [
     url: "https://www.crazygames.com/game/buildnow-gg"
   }
 ];
-
 const CATEGORIES = ["All games", "Arcade", "Action", "Racing", "Puzzle", "Casual", "Adventure", "Sports", "Shooter"];
 const $=s=>document.querySelector(s);
 const grid=$("#game-grid"),search=$("#search"),cats=$("#categories");
