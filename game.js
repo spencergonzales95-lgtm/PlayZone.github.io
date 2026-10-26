@@ -1,60 +1,72 @@
 const GAMES = [
-
-{
-  id: "buildnow",
-  title: "BuildNow.GG",
-  category: "Shooter",
-  icon: "🔫",
-  theme: "purple",
-  type: "external",
-  description: "Build, edit, and battle other players in BuildNow.GG.",
-  controls: "Keyboard and mouse.",
-  url: "https://www.crazygames.com/game/buildnow-gg"
-},
-
+  {
+    id: "buildnow",
+    title: "BuildNow.GG",
+    category: "Shooter",
+    icon: "🔫",
+    theme: "purple",
+    type: "external",
+    description: "Build, edit, and battle other players in BuildNow.GG.",
+    controls: "Keyboard and mouse.",
+    url: "https://www.crazygames.com/game/buildnow-gg"
+  }
 ];
-const $=s=>document.querySelector(s);const id=new URLSearchParams(location.search).get("id")||"neon-dodge";const game=GAMES.find(g=>g.id===id)||GAMES[0];
-$("#game-title").textContent=game.title;document.title=game.title+" — PlayZone";$("#game-category").textContent=game.category.toUpperCase();$("#info-category").textContent=game.category;$("#game-description").textContent=game.description;$("#game-controls").textContent="Controls: "+game.controls;
-function getFavs(){try{return JSON.parse(localStorage.getItem("playzone-favs")||"[]")}catch{return []}}
-function syncFav(){const b=$("#favorite-button"),f=getFavs().includes(game.id);b.setAttribute("aria-pressed",f);b.textContent=f?"♥ Saved":"♡ Save"}
-syncFav();$("#favorite-button").addEventListener("click",()=>{let f=getFavs();f=f.includes(game.id)?f.filter(x=>x!==game.id):[...f,game.id];localStorage.setItem("playzone-favs",JSON.stringify(f));syncFav()});
-$("#fullscreen-button").addEventListener("click",async()=>{const target=$("#player-shell");try{if(document.fullscreenElement)await document.exitFullscreen();else await target.requestFullscreen()}catch{alert("Fullscreen isn't available in this browser.")}});
-if(game.type==="external"){
- $("#built-in-game").hidden=true;const frame=$("#external-frame");
- if(game.url&&/^https:\/\//i.test(game.url)){frame.src=game.url;frame.hidden=false;frame.addEventListener("error",()=>$("#player-error").classList.remove("hidden"))}
- else {$("#player-error").classList.remove("hidden");$("#external-link").href="#";$("#external-link").textContent="No game configured yet";$("#external-link").addEventListener("click",e=>e.preventDefault())}
-}else startBuiltIn(game.mode);
-const related=$("#related-grid");GAMES.filter(g=>g.id!==game.id).slice(0,4).forEach(g=>{const a=document.createElement("a");a.className="related-card";a.href="game.html?id="+encodeURIComponent(g.id);a.innerHTML=`<div class="game-thumb" style="background:${thumbStyle(g.theme)}"><span class="thumb-art">${g.icon}</span></div><div class="card-title">${g.title}</div><div class="card-meta">${g.category}</div>`;related.appendChild(a)});
-function thumbStyle(theme){const c={neon:"linear-gradient(135deg,#0b7b88,#16224d)",pink:"linear-gradient(135deg,#a52e83,#40266c)",orange:"linear-gradient(135deg,#e36b34,#6b2c48)",blue:"linear-gradient(135deg,#277fc0,#292b72)",purple:"linear-gradient(135deg,#7b49c8,#222b62)",green:"linear-gradient(135deg,#147e67,#163c47)",red:"linear-gradient(135deg,#c34454,#51264e)",cyan:"linear-gradient(135deg,#188eaa,#254c87)",lime:"linear-gradient(135deg,#76a832,#17685f)"};return c[theme]||c.purple}
-function startBuiltIn(mode){
- const root=$("#built-in-game");root.innerHTML=`<div class="game-canvas-wrap"><div class="game-hud"><span id="hud-left">PLAYZONE ARCADE</span><span id="hud-right">SCORE 0</span></div><canvas class="game-canvas" id="canvas" tabindex="0" aria-label="${game.title} game area"></canvas><div class="game-overlay" id="overlay"><p class="eyebrow">PLAYZONE ORIGINAL</p><h2>${game.title}</h2><p id="overlay-desc">${intro(mode)}</p><button id="start-btn">▶ Play now</button><p class="small">No download required · Works in your browser</p></div><div class="mobile-controls" id="mobile-controls"><div class="control-group"><button data-key="left" aria-label="Move left">←</button><button data-key="right" aria-label="Move right">→</button></div><button data-key="jump" aria-label="Jump">↑ JUMP</button></div></div>`;
- const canvas=$("#canvas"),ctx=canvas.getContext("2d"),overlay=$("#overlay");let running=false,raf=0,last=0,score=0,elapsed=0,keys={},objects=[],player={},timer=0,misses=0,sequence=[],inputSeq=[],tiles=[],flashes={},round=0,spawn=0,world=0;
- function resize(){const r=canvas.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);canvas.width=Math.max(1,Math.floor(r.width*dpr));canvas.height=Math.max(1,Math.floor(r.height*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);if(!running)drawIdle()}
- const W=()=>canvas.clientWidth,H=()=>canvas.clientHeight;
- function intro(m){return ({dodge:"Move side to side and dodge the falling blocks. Survive to build your score.",tap:"Tap the glowing target as many times as possible in 15 seconds.",runner:"Jump over the blocks and try to run as far as you can.",memory:"Find all matching pairs. Memorize the cards and clear the board.",orbit:"Move around the arena and avoid the incoming orbs.",goal:"Tap the soccer ball before it escapes. Three misses ends the round.",color:"Watch the tile sequence, then repeat it in the same order."})[m]||"Ready to play?"}
- function drawIdle(){const w=W(),h=H();ctx.clearRect(0,0,w,h);ctx.fillStyle="#0c1020";ctx.fillRect(0,0,w,h);ctx.strokeStyle="#252e4a";ctx.lineWidth=1;for(let x=0;x<w;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}ctx.fillStyle="#a995ff";ctx.font="bold 15px system-ui";ctx.textAlign="center";ctx.fillText("PRESS PLAY TO START",w/2,h*.72)}
- function roundRect(x,y,w,h,r,color){ctx.fillStyle=color;ctx.beginPath();ctx.roundRect(x,y,w,h,r);ctx.fill()}
- function start(){cancelAnimationFrame(raf);running=true;score=0;elapsed=0;timer=15;misses=0;objects=[];keys={};spawn=0;world=0;round=0;sequence=[];inputSeq=[];flashes={};initMode();overlay.classList.add("hidden");$("#hud-right").textContent="SCORE 0";last=performance.now();if(mode==="color")colorRound();else if(mode==="memory")drawMemory();else if(mode==="tap")drawTap();else if(mode==="goal")drawGoal();else{raf=requestAnimationFrame(loop)}}
- function initMode(){const w=W(),h=H();player={x:w/2,y:h-55,w:32,h:32,vy:0,ground:h-50};if(mode==="memory"){const vals=["✦","☾","♟","◆","●","♥","⚡","☀"];tiles=[...vals,...vals].sort(()=>Math.random()-.5).map((v,i)=>({v,i,open:false,matched:false}));round=0;flashes={};}if(mode==="tap"){player.x=w/2;player.y=h/2;player.r=34;moveTarget()}if(mode==="goal"){player.x=w*.65;player.y=h*.5;player.r=29;moveTarget()}}
- function moveTarget(){player.x=45+Math.random()*Math.max(1,W()-90);player.y=65+Math.random()*Math.max(1,H()-130)}
- function loop(now){if(!running)return;const dt=Math.min((now-last)/1000,.035);last=now;elapsed+=dt;update(dt);draw();raf=requestAnimationFrame(loop)}
- function update(dt){const w=W(),h=H();if(mode==="dodge"||mode==="orbit"){const speed=mode==="orbit"?250:330;if(keys.left)player.x-=speed*dt;if(keys.right)player.x+=speed*dt;player.x=Math.max(player.w/2,Math.min(w-player.w/2,player.x));spawn+=dt;if(spawn>(mode==="orbit"?.52:.42)){spawn=0;objects.push({x:Math.random()*(w-28)+14,y:-30,s:18+Math.random()*23,v:150+Math.random()*120})}objects.forEach(o=>o.y+=o.v*dt);objects=objects.filter(o=>o.y<h+40);for(const o of objects){if(Math.abs(o.x-player.x)<(o.s+player.w)/2&&Math.abs(o.y-player.y)<(o.s+player.h)/2){end("Game over!",`You scored ${score}. Give it another try.`);return}}score=Math.floor(elapsed*10);if(mode==="orbit"){player.y=h*.73+Math.sin(elapsed*1.5)*h*.12;objects.forEach(o=>{o.x+=Math.sin(elapsed+o.y*.01)*25*dt})}}
- if(mode==="runner"){world+=dt*(220+Math.min(score,500));if(player.y<player.ground-player.h){player.vy+=1000*dt;player.y+=player.vy*dt;if(player.y>player.ground-player.h){player.y=player.ground-player.h;player.vy=0}}if((keys.jump||keys.up)&&player.y>=player.ground-player.h){player.vy=-430;keys.jump=false;keys.up=false}spawn+=dt;if(spawn>1.05){spawn=0;objects.push({x:w+25,y:player.ground-26,w:22+Math.random()*20,h:26,v:230+Math.min(score,400)})}objects.forEach(o=>o.x-=o.v*dt);objects=objects.filter(o=>o.x>-50);if(objects.some(o=>player.x+player.w/2>o.x&&player.x-player.w/2<o.x+o.w&&player.y+player.h>o.y)){end("Run over!",`Distance score: ${score}. Jump over the next obstacle!`);return}score=Math.floor(world*2)}
- $("#hud-right").textContent="SCORE "+score}
- function draw(){const w=W(),h=H();ctx.clearRect(0,0,w,h);ctx.fillStyle="#0c1020";ctx.fillRect(0,0,w,h);ctx.strokeStyle="#202944";for(let x=0;x<w;x+=32){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=32){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}
- if(mode==="dodge"||mode==="orbit"){objects.forEach(o=>{ctx.shadowBlur=18;ctx.shadowColor="#ff5cbd";roundRect(o.x-o.s/2,o.y-o.s/2,o.s,o.s,5,"#ff5cbd")});ctx.shadowBlur=20;ctx.shadowColor="#8f77ff";roundRect(player.x-player.w/2,player.y-player.h/2,player.w,player.h,8,"#a995ff");ctx.shadowBlur=0}
- if(mode==="runner"){ctx.fillStyle="#34415f";ctx.fillRect(0,player.ground,w,3);objects.forEach(o=>roundRect(o.x,o.y,o.w,o.h,5,"#ff8c6b"));ctx.shadowBlur=16;ctx.shadowColor="#a995ff";roundRect(player.x-player.w/2,player.y,player.w,player.h,7,"#a995ff");ctx.shadowBlur=0}
- }
- function end(title,desc){running=false;cancelAnimationFrame(raf);overlay.classList.remove("hidden");$("#overlay-desc").textContent=desc;overlay.querySelector("h2").textContent=title;$("#start-btn").textContent="↻ Play again";$("#hud-right").textContent="SCORE "+score}
- function drawTap(){const w=W(),h=H();ctx.clearRect(0,0,w,h);ctx.fillStyle="#0c1020";ctx.fillRect(0,0,w,h);ctx.textAlign="center";ctx.fillStyle="#f0eaff";ctx.font="bold 22px system-ui";ctx.fillText("TAP THE TARGET!",w/2,45);ctx.fillStyle="#a9b0c8";ctx.font="14px system-ui";ctx.fillText("Time: "+Math.ceil(timer)+"s",w/2,70);ctx.shadowBlur=24;ctx.shadowColor="#ff69cb";ctx.fillStyle="#ff69cb";ctx.beginPath();ctx.arc(player.x,player.y,player.r,0,Math.PI*2);ctx.fill();ctx.shadowBlur=0;ctx.fillStyle="white";ctx.font="bold 24px system-ui";ctx.fillText("TAP",player.x,player.y+8);$("#hud-right").textContent="TAPS "+score;if(running){const dt=Math.min(.04,(performance.now()-last)/1000);timer-=dt;last=performance.now();if(timer<=0){timer=0;end("Time's up!",`You got ${score} taps. Can you beat that?`);return}raf=requestAnimationFrame(drawTap)}}
- function drawGoal(){const w=W(),h=H();ctx.clearRect(0,0,w,h);ctx.fillStyle="#0c1020";ctx.fillRect(0,0,w,h);ctx.strokeStyle="#284b54";ctx.lineWidth=3;ctx.strokeRect(20,20,w-40,h-40);ctx.beginPath();ctx.arc(w/2,h/2,50,0,Math.PI*2);ctx.stroke();ctx.textAlign="center";ctx.fillStyle="#f0eaff";ctx.font="bold 20px system-ui";ctx.fillText("TAP THE BALL!",w/2,50);ctx.fillStyle="#9eabc3";ctx.font="14px system-ui";ctx.fillText("Misses: "+misses+"/3",w/2,75);ctx.font="52px system-ui";ctx.fillText("⚽",player.x,player.y+17);$("#hud-right").textContent="GOALS "+score;if(running)raf=requestAnimationFrame(drawGoal)}
- function drawMemory(){const w=W(),h=H();ctx.clearRect(0,0,w,h);ctx.fillStyle="#0c1020";ctx.fillRect(0,0,w,h);const cols=4,gap=10,cardW=Math.min(90,(w-40-gap*(cols-1))/cols),cardH=Math.min(82,(h-90-gap*3)/4),totalW=cols*cardW+(cols-1)*gap,startX=(w-totalW)/2,startY=Math.max(52,(h-(4*cardH+3*gap))/2);ctx.textAlign="center";ctx.fillStyle="#f0eaff";ctx.font="bold 17px system-ui";ctx.fillText("MATCH ALL THE PAIRS",w/2,30);tiles.forEach((t,i)=>{const x=startX+(i%cols)*(cardW+gap),y=startY+Math.floor(i/cols)*(cardH+gap);t.rect={x,y,w:cardW,h:cardH};roundRect(x,y,cardW,cardH,10,t.matched?"#234b50":t.open?"#47377b":"#202940");ctx.fillStyle=t.open||t.matched?"#fff":"#9e91d8";ctx.font=`${Math.min(28,cardW*.4)}px system-ui`;ctx.fillText(t.open||t.matched?t.v:"?",x+cardW/2,y+cardH/2+9)});$("#hud-right").textContent="MOVES "+round+" · PAIRS "+tiles.filter(t=>t.matched).length/2}
- function colorRound(){if(!running)return;const palette=["#ff647c","#9b82ff","#5ce0bf","#ffcc66"];sequence.push(Math.floor(Math.random()*palette.length));inputSeq=[];showSequence(0,palette)}
- function showSequence(i,palette){if(!running)return;if(i>=sequence.length){tiles=palette.map((color,j)=>({color,j}));drawColorTiles();return}flashes={i:sequence[i]};drawColorTiles();setTimeout(()=>{flashes={};drawColorTiles();setTimeout(()=>showSequence(i+1,palette),220)},480)}
- function drawColorTiles(){const w=W(),h=H();ctx.clearRect(0,0,w,h);ctx.fillStyle="#0c1020";ctx.fillRect(0,0,w,h);const colors=["#ff647c","#9b82ff","#5ce0bf","#ffcc66"],size=Math.min(125,(Math.min(w,h)-55)/2),gap=13,sx=(w-(size*2+gap))/2,sy=(h-(size*2+gap))/2;tiles.forEach(t=>{roundRect(sx+(t.j%2)*(size+gap),sy+Math.floor(t.j/2)*(size+gap),size,size,18,flashes.i===t.j?"#ffffff":t.color)});ctx.fillStyle="#f0eaff";ctx.font="bold 16px system-ui";ctx.textAlign="center";ctx.fillText("ROUND "+(sequence.length),w/2,30);$("#hud-right").textContent="ROUND "+sequence.length}
- function handleTap(e){if(!running)return;const r=canvas.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;if(mode==="tap"){score++;moveTarget();drawTap()}else if(mode==="goal"){const d=Math.hypot(x-player.x,y-player.y);if(d<65){score++;moveTarget()}else{misses++;if(misses>=3){end("Full time!",`You scored ${score} goals.`);return}}drawGoal()}else if(mode==="memory"){const t=tiles.find(t=>t.rect&&x>=t.rect.x&&x<=t.rect.x+t.rect.w&&y>=t.rect.y&&y<=t.rect.y+t.rect.h&&!t.open&&!t.matched);if(!t||flashes.lock)return;t.open=true;drawMemory();const open=tiles.filter(t=>t.open&&!t.matched);if(open.length===2){round++;if(open[0].v===open[1].v){open.forEach(t=>t.matched=true);drawMemory();if(tiles.every(t=>t.matched))end("You did it!",`All pairs matched in ${round} moves!`)}else{flashes.lock=true;setTimeout(()=>{open.forEach(t=>t.open=false);flashes.lock=false;drawMemory()},650)}}}else if(mode==="color"){if(flashes.lock||!tiles.length)return;const size=Math.min(125,(Math.min(W(),H())-55)/2),gap=13,sx=(W()-(size*2+gap))/2,sy=(H()-(size*2+gap))/2;const j=(x>=sx+size+gap?1:0)+(y>=sy+size+gap?2:0);if(x<sx||x>sx+2*size+gap||y<sy||y>sy+2*size+gap)return;inputSeq.push(j);flashes={i:j,lock:true};drawColorTiles();setTimeout(()=>{flashes={};if(sequence[inputSeq.length-1]!==j){end("Not quite!",`You reached round ${Math.max(0,sequence.length-1)}. Try again!`);return}if(inputSeq.length===sequence.length){score=sequence.length;setTimeout(colorRound,400)}else{flashes.lock=false;drawColorTiles()}},160)}}
- canvas.addEventListener("pointerdown",handleTap);$("#start-btn").addEventListener("click",start);document.querySelectorAll("[data-key]").forEach(b=>{const k=b.dataset.key;b.addEventListener("pointerdown",e=>{e.preventDefault();keys[k]=true;if(k==="jump")keys.jump=true});["pointerup","pointercancel","pointerleave"].forEach(ev=>b.addEventListener(ev,()=>{keys[k]=false}))});
- document.addEventListener("keydown",e=>{if(["ArrowLeft","ArrowRight","ArrowUp"," "].includes(e.key))e.preventDefault();if(["ArrowLeft","a","A"].includes(e.key))keys.left=true;if(["ArrowRight","d","D"].includes(e.key))keys.right=true;if(["ArrowUp","w","W"," "].includes(e.key)){keys.up=true;keys.jump=true}if(e.key==="Enter"&&!running)start()});
- document.addEventListener("keyup",e=>{if(["ArrowLeft","a","A"].includes(e.key))keys.left=false;if(["ArrowRight","d","D"].includes(e.key))keys.right=false;if(["ArrowUp","w","W"," "].includes(e.key)){keys.up=false;keys.jump=false}});
- window.addEventListener("resize",resize);resize();
+
+const $ = selector => document.querySelector(selector);
+
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id") || "buildnow";
+const game = GAMES.find(item => item.id === id) || GAMES[0];
+
+const titleElement = $("#game-title");
+const categoryElement = $("#game-category");
+const infoCategoryElement = $("#info-category");
+const descriptionElement = $("#game-description");
+const controlsElement = $("#game-controls");
+const playerElement =
+  $("#game-player") ||
+  $("#game-frame") ||
+  $("#player") ||
+  $(".game-player");
+
+if (titleElement) {
+  titleElement.textContent = game.title;
+  document.title = `${game.title} — PlayZone`;
+}
+
+if (categoryElement) {
+  categoryElement.textContent = game.category;
+}
+
+if (infoCategoryElement) {
+  infoCategoryElement.textContent = game.category;
+}
+
+if (descriptionElement) {
+  descriptionElement.textContent = game.description;
+}
+
+if (controlsElement) {
+  controlsElement.textContent = game.controls;
+}
+
+if (playerElement) {
+  playerElement.innerHTML = "";
+
+  const iframe = document.createElement("iframe");
+
+  iframe.src = game.url;
+  iframe.title = game.title;
+  iframe.allow = "fullscreen; autoplay; gamepad";
+  iframe.allowFullscreen = true;
+  iframe.loading = "lazy";
+  iframe.referrerPolicy = "strict-origin-when-cross-origin";
+
+  iframe.style.width = "100%";
+  iframe.style.height = "100%";
+  iframe.style.minHeight = "500px";
+  iframe.style.border = "none";
+  iframe.style.display = "block";
+
+  playerElement.appendChild(iframe);
 }
