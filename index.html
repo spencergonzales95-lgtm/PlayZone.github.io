@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#10131d">
+  <meta name="description" content="Play free online games on PlayZone. Discover arcade, action, racing, puzzle and casual browser games.">
+  <title>PlayZone — Free Online Games</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./" aria-label="PlayZone home"><span class="brand-mark">P</span><span>Play<span class="brand-accent">Zone</span></span></a>
+    <label class="search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"></circle><path d="m16 16 4 4"></path></svg><input id="search" type="search" placeholder="Search games..." autocomplete="off" aria-label="Search games"><kbd>/</kbd></label>
+    <button class="icon-button" id="favorites-toggle" aria-pressed="false" title="Show favorites">♡ <span class="desktop-only">Favorites</span></button>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span class="live-dot"></span> INSTANT BROWSER GAMES</div>
+        <h1>Find your next<br><span>favorite game.</span></h1>
+        <p>Jump in, play instantly, and chase your next high score. No downloads. No account required.</p>
+        <a class="primary-button" href="#games">Explore games <span aria-hidden="true">↘</span></a>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div>
+        <div class="float-card float-card-one">✦</div><div class="float-card float-card-two">↗</div>
+        <div class="hero-console"><div class="console-screen"><span>PLAY</span><b>ZONE</b><i>PRESS START</i></div><div class="console-pad"><span></span><span></span><span></span><span></span></div></div>
+      </div>
+    </section>
+    <nav class="category-nav" id="categories" aria-label="Game categories"></nav>
+    <section class="section-heading" id="games">
+      <div><p class="eyebrow">THE ARCADE</p><h2 id="section-title">Popular games</h2></div>
+      <span class="result-count" id="result-count"></span>
+    </section>
+    <section class="game-grid" id="game-grid" aria-live="polite"></section>
+    <section class="empty-state hidden" id="empty-state"><div class="empty-icon">⌕</div><h3>No games found</h3><p>Try another title or category.</p><button class="secondary-button" id="clear-search">Clear filters</button></section>
+    <section class="note-panel"><div class="note-icon">⚡</div><div><h3>Made for quick play</h3><p>PlayZone is designed to load fast on desktop and mobile. Game performance still depends on your device, browser, and connection.</p></div></section>
+  </main>
+  <footer><a class="brand footer-brand" href="./"><span class="brand-mark">P</span><span>Play<span class="brand-accent">Zone</span></span></a><p>Free browser games. Built to play.</p><p class="footer-small">PlayZone is an independent project and is not affiliated with CrazyGames.</p></footer>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
