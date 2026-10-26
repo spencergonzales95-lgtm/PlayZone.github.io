@@ -1,14 +1,17 @@
 const GAMES = [
- {id:"neon-dodge",title:"Neon Dodge",category:"Arcade",icon:"⚡",theme:"neon",type:"builtin",description:"Dodge the falling neon blocks and survive for as long as you can. Your score climbs every second.",controls:"Desktop: A/D or ←/→ to move. Mobile: use the on-screen arrows.",mode:"dodge"},
- {id:"tap-rush",title:"Tap Rush",category:"Casual",icon:"👆",theme:"pink",type:"builtin",description:"Tap the target as many times as you can before the timer runs out. Try to beat your personal best.",controls:"Click or tap the target as fast as you can.",mode:"tap"},
- {id:"pixel-runner",title:"Pixel Runner",category:"Arcade",icon:"🏃",theme:"orange",type:"builtin",description:"Jump over obstacles, keep your momentum, and see how far you can run.",controls:"Desktop: Space, W, or ↑ to jump. Mobile: tap JUMP.",mode:"runner"},
- {id:"memory-match",title:"Memory Match",category:"Puzzle",icon:"🧠",theme:"blue",type:"builtin",description:"Flip cards and find matching pairs. Clear the board in as few moves as possible.",controls:"Click or tap cards to flip them.",mode:"memory"},
- {id:"orbit-breaker",title:"Orbit Breaker",category:"Action",icon:"🪐",theme:"purple",type:"builtin",description:"Move around the arena and avoid incoming orbs. How long can you last?",controls:"Desktop: use A/D or ←/→. Mobile: use the on-screen arrows.",mode:"orbit"},
- {id:"drift-zone",title:"Drift Zone",category:"Racing",icon:"🏎️",theme:"green",type:"external",description:"Add a racing game you have permission to embed by editing app.js and game.js.",controls:"Controls depend on the selected game.",url:""},
- {id:"battle-arena",title:"Battle Arena",category:"Action",icon:"⚔️",theme:"red",type:"external",description:"Add an action game you have permission to embed by editing app.js and game.js.",controls:"Controls depend on the selected game.",url:""},
- {id:"block-world",title:"Block World",category:"Adventure",icon:"🧱",theme:"cyan",type:"external",description:"Add a browser adventure game you have permission to embed by editing app.js and game.js.",controls:"Controls depend on the selected game.",url:""},
- {id:"goal-rush",title:"Goal Rush",category:"Sports",icon:"⚽",theme:"lime",type:"builtin",description:"Keep the ball in play and rack up points in this quick reflex challenge.",controls:"Click or tap the ball to score. Miss three times and the round ends.",mode:"goal"},
- {id:"color-flip",title:"Color Flip",category:"Puzzle",icon:"🎨",theme:"pink",type:"builtin",description:"Remember the pattern and repeat it in the right order as the sequence gets longer.",controls:"Click or tap the colored tiles in the sequence shown.",mode:"color"}
+
+{
+  id: "buildnow",
+  title: "BuildNow.GG",
+  category: "Shooter",
+  icon: "🔫",
+  theme: "purple",
+  type: "external",
+  description: "Build, edit, and battle other players in BuildNow.GG.",
+  controls: "Keyboard and mouse.",
+  url: "https://www.crazygames.com/game/buildnow-gg"
+},
+
 ];
 const $=s=>document.querySelector(s);const id=new URLSearchParams(location.search).get("id")||"neon-dodge";const game=GAMES.find(g=>g.id===id)||GAMES[0];
 $("#game-title").textContent=game.title;document.title=game.title+" — PlayZone";$("#game-category").textContent=game.category.toUpperCase();$("#info-category").textContent=game.category;$("#game-description").textContent=game.description;$("#game-controls").textContent="Controls: "+game.controls;
